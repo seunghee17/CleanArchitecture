@@ -1,6 +1,15 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id ("kotlin-kapt")
+    kotlin("kapt")
+}
+
+fun getBaseUrl(propertyBaseUrl:String):String{
+    return gradleLocalProperties(rootDir).getProperty(propertyBaseUrl)
 }
 
 android {
@@ -13,6 +22,8 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String","BASEURL",getBaseUrl("BASEURL"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,6 +44,20 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+//    kotlin{
+//        jvmToolchain{
+//            languageVersion.set(JavaLanguageVersion.of(VERSION_18))
+//        }
+//    }
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_18.toString()
+//    }
+    buildFeatures{
+        dataBinding = true
+        viewBinding = true
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -44,4 +69,22 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation ("io.reactivex.rxjava2:rxkotlin:2.4.0")
+    implementation ("io.reactivex.rxjava2:rxandroid:2.1.1")
+
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt ("com.google.dagger:hilt-compiler:2.48")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation("androidx.room:room-coroutines:2.1.0-alpha04")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.fragment:fragment-ktx:1.5.7")
+}
+
+kapt {
+    correctErrorTypes =true
 }
